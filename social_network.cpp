@@ -4,10 +4,13 @@
 #include <sstream>
 
 std::string findFullName(std::stringstream &stream);
+void printUserOptions();
 
 int main(int argc, char const *argv[]) {    
     Network net;
     net.readUsers(const_cast<char*>(argv[1])); // casts argument (assumed to be exact file name) as a non-const so code works
+
+    printUserOptions();
 
     // first input of program's runtime and stores entire input in userInput
     std::string userInput;
@@ -25,6 +28,8 @@ int main(int argc, char const *argv[]) {
     // the loop will also end if the command doesn't start with a number because option will default to 0 making it out of range
     while (option < 5 && option > 0) {
         if (!firstTime) {
+            printUserOptions();
+
             std::cout << "> ";
             std::getline(std::cin, userInput);
             
@@ -96,4 +101,14 @@ std::string findFullName(std::stringstream &stream) {
     fullName += " " + secondName;
 
     return fullName;
+}
+
+// pre: none
+// post: prints out available options for user
+void printUserOptions() {
+    std::cout << std::endl << "List of available options:" << std::endl;
+    std::cout << "Option 1: Add a new user." << std::endl;
+    std::cout << "Option 2: Add a friend connection." << std::endl;
+    std::cout << "Option 3: Delete a friend connection." << std::endl;
+    std::cout << "Option 4: Write current network to file." << std::endl << std::endl;
 }
