@@ -18,11 +18,26 @@ public:
 
     // accessors
 
+    // pre: post object is constructed
+    // post: returns post's message ID
     int getMessageId();
+    
+    // pre: post object is constructed
+    // post: returns post's owner ID
     int getOwnerId();
+
+    // pre: post object is constructed
+    // post: returns post's message
     std::string getMessage();
+
+    // pre: post object is constructed
+    // post: returns post's number of likes
     int getLikes();
+
+
     std::string getAuthor();
+
+    
     bool getIsPublic();
 };
 
