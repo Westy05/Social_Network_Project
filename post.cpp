@@ -1,5 +1,7 @@
 #include "post.h"
 
+// ----Post----
+
 // accessors
 
 // pre: post object is constructed
@@ -36,3 +38,26 @@ std::string Post::getAuthor() { return ""; }
 // pre: post object is constructed
 // post: returns true
 bool Post::getIsPublic() { return true; }
+
+
+// ----IncomingPost----
+
+// accessors
+
+// pre: post object is constructed
+// post: returns string containing author's name, indicates whether the post is public, and everything from Post::toString()
+std::string IncomingPost::toString() {
+    std::string result = author_ + " wrote";
+    if (!isPublic_) result += " (private)";
+    result += ": " + Post::toString();
+
+    return result;
+}
+
+// pre: post object is constructed
+// post: returns author of incoming post's name
+std::string IncomingPost::getAuthor() { return author_; }
+
+// pre: post object is constructed
+// post: returns a boolean that indicates whether the incoming post is public or private
+bool IncomingPost::getIsPublic() { return isPublic_; }

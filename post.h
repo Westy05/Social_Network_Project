@@ -43,6 +43,28 @@ public:
     virtual bool getIsPublic();
 };
 
+class IncomingPost : public Post {
+private:
+    std::string author_;
+    bool isPublic_;
+public:
+    IncomingPost() : isPublic_(true), author_(std::string()) {}
+    IncomingPost(int messageId, int ownerId, std::string message, int likes, bool isPublic, std::string author) 
+    : Post(messageId, ownerId, message, likes), isPublic_(isPublic), author_(author) {}
 
+    // accessors
+
+    // pre: post object is constructed
+    // post: returns string containing author's name, indicates whether the post is public, and everything from Post::toString()
+    std::string toString();
+
+    // pre: post object is constructed
+    // post: returns author of incoming post's name
+    std::string getAuthor();
+
+    // pre: post object is constructed
+    // post: returns a boolean that indicates whether the incoming post is public or private
+    bool getIsPublic();
+};
 
 #endif
