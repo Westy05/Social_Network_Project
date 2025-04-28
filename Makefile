@@ -1,6 +1,6 @@
 COMP=g++
 FLAGS=-std=c++11
-main: social_network.o user.o network.o
+main: social_network.o user.o network.o post.o
 	$(COMP) $(FLAGS) $^ -o $@
 %.o: %.cpp
 	$(COMP) $(FLAGS) -c $< -o $@
