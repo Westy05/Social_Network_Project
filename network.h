@@ -52,6 +52,7 @@ public:
     // pre: fname must be a valid file name to write to
     // post: returns 0 if the file was successfully written to, returns -1 if it fails at any point; supposed to save all posts in network object
     int writePosts(char* fname);
+    
     // ---accessors---
     
     // pre: name must be a name belonging to a user object in users_

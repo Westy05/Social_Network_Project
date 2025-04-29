@@ -14,7 +14,7 @@ private:
     int year_; // user's birth year
     int zip_; // user's zip code
     std::set<int> friends_; // set of user's friends' IDs
-    std::vector<Post*> messages_;
+    std::vector<Post*> messages_; // vector of posts from the user
 public:
     User() : id_(0), name_(std::string()), year_(0), zip_(0), friends_(std::set<int>()), messages_(std::vector<Post*>()) {}
     User(int id, std::string name, int year, int zip, std::set<int> friends) : id_(id), name_(name), year_(year), zip_(zip), friends_(friends), messages_(std::vector<Post*>()) {}

@@ -32,6 +32,18 @@ std::string Network::trimName(const std::string &name) {
     return result;
 }
 
+// pre: source is an actual user id in users_ and group and visited exist beyond the scope of the function with visited being the size of users_
+// post: returns nothing. only modifies 2nd and 3rd paramaters where the group paramater should be somewhat populated.
+void Network::groupsHelper(int source, std::vector<int>& group, std::vector<bool>& visited) {
+    for (int i : users_[source]->getFriends()) {
+        if (!visited[i]) {
+            visited[i] = true;
+            group.push_back(i);
+            groupsHelper(i, group, visited); // recursive call to go further into the depth of the network
+        }
+    }
+}
+
 // ---modifiers---
 
 // pre: user parameter has all fields filled out
@@ -443,18 +455,6 @@ std::vector<int> Network::suggestFriends(int who, int& score) {
     }
 
     return recommendedFriends;
-}
-
-// pre: source is an actual user id in users_ and group and visited exist beyond the scope of the function with visited being the size of users_
-// post: returns nothing. only modifies 2nd and 3rd paramaters where the group paramater should be somewhat populated.
-void Network::groupsHelper(int source, std::vector<int>& group, std::vector<bool>& visited) {
-    for (int i : users_[source]->getFriends()) {
-        if (!visited[i]) {
-            visited[i] = true;
-            group.push_back(i);
-            groupsHelper(i, group, visited); // recursive call to go further into the depth of the network
-        }
-    }
 }
 
 // pre: network object has been properly initialized
