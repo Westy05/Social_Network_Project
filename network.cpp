@@ -179,12 +179,13 @@ int Network::writeUsers(char* fname) {
 // pre: paramaters must be valid and ownerId must be an already existing user ID
 // post: adds a new post entry in the user's messages_ vector
 void Network::addPost(int ownerId, std::string message, int likes, bool isIncoming, std::string authorName, bool isPublic) {
-    int messageId = users_[ownerId]->getPosts().size();
+    int messageId = numOfPosts_;
     if (isIncoming) { // determines whether to add new post as IncomingPost or Post
         users_[ownerId]->addPost(new IncomingPost(messageId, ownerId, message, likes, isPublic, authorName));
     } else {
         users_[ownerId]->addPost(new Post(messageId, ownerId, message, likes));
     }
+    numOfPosts_++;
 }
 
 // pre: fname (the file name of the txt file) must be present in the same directory as the program and have correct format
@@ -238,7 +239,8 @@ int Network::writePosts(char* fname) {
     // creates vector to store all posts in the network and uses for loop to insert all posts found
     std::vector<Post*> allPosts;
     for (User* user : users_) {
-        allPosts.insert(allPosts.end(), user->getPosts().begin(), user->getPosts().end());
+        std::vector<Post*> currentPosts = user->getPosts();
+        allPosts.insert(allPosts.end(), currentPosts.begin(), currentPosts.end());
     }
 
     // sorts vector so that it's ordered by messageId in ascending order (smallest to largest)

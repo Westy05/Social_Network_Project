@@ -7,6 +7,7 @@
 class Network {
 private:
     std::vector<User*> users_; // vector of dynamically allocated users
+    int numOfPosts_; // total number of posts in network, useful for figuring out the next message id
 
     // pre: name is a valid string
     // post: returns a trimmed version of the name

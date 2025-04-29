@@ -125,11 +125,12 @@ std::string findFullName(std::stringstream &stream) {
 // pre: none
 // post: prints out available options for user
 void printUserOptions() {
+    std::string bulletin = " \u2022";
     std::cout << std::endl << "List of available options:" << std::endl;
-    std::cout << "Option 1: Add a new user." << std::endl;
-    std::cout << "Option 2: Add a friend connection." << std::endl;
-    std::cout << "Option 3: Delete a friend connection." << std::endl;
-    std::cout << "Option 4: Write current network to file." << std::endl;
-    std::cout << "Option 5: View most recent posts of a specific user." << std::endl;
+    std::cout << bulletin << " Option 1: Add a new user." << std::endl;
+    std::cout << bulletin << " Option 2: Add a friend connection." << std::endl;
+    std::cout << bulletin << " Option 3: Delete a friend connection." << std::endl;
+    std::cout << bulletin << " Option 4: Write current network to file." << std::endl;
+    std::cout << bulletin << " Option 5: View most recent posts of a specific user." << std::endl;
     std::cout << std::endl;
 }
