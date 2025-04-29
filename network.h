@@ -16,6 +16,10 @@ private:
     // pre: source is an actual user id in users_ and group and visited exist beyond the scope of the function with visited being the size of users_
     // post: returns nothing. only modifies 2nd and 3rd paramaters where the group paramater should be somewhat populated if it finds anything.
     void groupsHelper(int source, std::vector<int>& group, std::vector<bool>& visited);
+
+    // pre: both paramaters are valid
+    // post: returns true if p1's messageId is less than p2's, false otherwise
+    bool postComp(Post* p1, Post* p2);
 public:
     Network() : users_(std::vector<User*>()) {}
 
@@ -41,6 +45,17 @@ public:
     // post: returns 0 if the file was successfully written to, returns -1 if it fails at any point
     int writeUsers(char* fname);
 
+    // pre: paramaters must be valid and ownerId must be an already existing user ID
+    // post: adds a new post entry in the user's messages_ vector
+    void addPost(int ownerId, std::string message, int likes, bool isIncoming, std::string authorName, bool isPublic);
+
+    // pre: fname (the file name of the txt file) must be present in the same directory as the program and have correct format
+    // post: returns 0 if the file was successfully read into the network object, returns -1 if it fails at any point
+    int readPosts(char* fname);
+
+    // pre: fname must be a valid file name to write to
+    // post: returns 0 if the file was successfully written to, returns -1 if it fails at any point; supposed to save all posts in network object
+    int writePosts(char* fname);
     // ---accessors---
     
     // pre: name must be a name belonging to a user object in users_
@@ -72,6 +87,10 @@ public:
     // post: returns a vector of vectors of integers with each vector within it representing a connected component
     // and each of these components contain the user ids of users connected to each other.
     std::vector<std::vector<int>> groups();
+
+    // pre: ownerId is a valid user ID (in the range of users_)
+    // post: returns a string containing the most recent [howMany] posts (or all if howMany >= the number of posts from user) of the specified user
+    std::string getPostsString(int ownerId, int howMany, bool showOnlyPublic);
 };
 
 #endif

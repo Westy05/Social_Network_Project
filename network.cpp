@@ -26,6 +26,11 @@ std::string Network::trimName(const std::string &name) {
     return result;
 }
 
+// pre: both paramaters are valid
+// post: returns true if p1's messageId is less than p2's, false otherwise
+bool Network::postComp(Post* p1, Post* p2) {
+    return p1->getMessageId() < p2->getMessageId();
+}
 
 // ---modifiers---
 
@@ -132,7 +137,7 @@ int Network::readUsers(char* fname) {
 }
 
 // pre: name must be a valid file name to write to
-// post: returns 0 if the file was successfully written to, returns -1 if it fails at any point
+// post: returns 0 if the file was successfully written to, returns -1 if it fails at any point; supposed to save all users in network object
 int Network::writeUsers(char* fname) {
     std::ofstream saveFile(fname);
 
@@ -153,6 +158,97 @@ int Network::writeUsers(char* fname) {
             saveFile << friendId << " ";
         }
         saveFile << std::endl;
+    }
+
+    saveFile.close();
+    return 0;
+}
+
+// pre: paramaters must be valid and ownerId must be an already existing user ID
+// post: adds a new post entry in the user's messages_ vector
+void Network::addPost(int ownerId, std::string message, int likes, bool isIncoming, std::string authorName, bool isPublic) {
+    int messageId = users_[ownerId]->getPosts().size();
+    if (isIncoming) { // determines whether to add new post as IncomingPost or Post
+        users_[ownerId]->addPost(new IncomingPost(messageId, ownerId, message, likes, isPublic, authorName));
+    } else {
+        users_[ownerId]->addPost(new Post(messageId, ownerId, message, likes));
+    }
+}
+
+// pre: fname (the file name of the txt file) must be present in the same directory as the program and have correct format
+// post: returns 0 if the file was successfully read into the network object, returns -1 if it fails at any point
+int Network::readPosts(char* fname) {
+    std::string myLine;
+    std::ifstream myFile(fname);
+    
+    if (!myFile.is_open()) return -1;
+
+    // gets the first line which should be the total num of posts
+    std::getline(myFile, myLine);
+    int totalPosts = std::stoi(myLine);
+    
+    // each if statement below calls the getline function and will return -1 if it fails
+    for (int i = 0; i < totalPosts; i++) {
+        if (!std::getline(myFile, myLine)) return -1; // read post's ID
+        int messageId = std::stoi(myLine);
+
+        if (!std::getline(myFile, myLine)) return -1; // read post's message
+        std::string messageContent = trimName(myLine);
+
+        if (!std::getline(myFile, myLine)) return -1; // read post's owner ID (user's ID)
+        int ownerId = std::stoi(myLine);
+
+        if (!std::getline(myFile, myLine)) return -1; // read post's number of likes
+        int likes = std::stoi(myLine);
+
+        if (!std::getline(myFile, myLine)) return -1; // read incoming post's privacy
+        std::string publicPrivate = trimName(myLine);
+
+        if (!std::getline(myFile, myLine)) return -1; // read incoming post's author
+        std::string authorName = trimName(myLine);
+
+        bool isPublic = (publicPrivate == "public");
+
+        addPost(ownerId, messageContent, likes, !authorName.empty(), authorName, isPublic);
+    }
+
+    myFile.close();
+    return 0;
+}
+
+// pre: fname must be a valid file name to write to
+// post: returns 0 if the file was successfully written to, returns -1 if it fails at any point; supposed to save all posts in network object
+int Network::writePosts(char* fname) {
+    std::ofstream saveFile(fname);
+
+    if (!saveFile.is_open()) return -1;
+
+    // creates vector to store all posts in the network and uses for loop to insert all posts found
+    std::vector<Post*> allPosts;
+    for (User* user : users_) {
+        allPosts.insert(allPosts.end(), user->getPosts().begin(), user->getPosts().end());
+    }
+
+    // sorts vector so that it's ordered by messageId in ascending order (smallest to largest)
+    std::sort(allPosts.begin(), allPosts.end(), postComp);
+
+    // writes the total number of posts
+    saveFile << allPosts.size() << std::endl;
+
+    // iterates over each post and writes their fields into the file with proper formatting
+    for (Post* post : allPosts) {
+        saveFile << post->getMessageId() << std::endl;
+        saveFile << "\t" << post->getMessage() << std::endl;
+        saveFile << "\t" << post->getOwnerId() << std::endl;
+        saveFile << "\t" << post->getLikes() << std::endl;
+
+        if (!post->getAuthor().empty()) {
+            saveFile << "\t" << (post->getIsPublic() ? "public" : "private") << std::endl;
+            saveFile << "\t" << post->getAuthor() << std::endl;
+        } else {
+            saveFile << "\t" << std::endl;
+            saveFile << "\t" << std::endl;
+        }
     }
 
     saveFile.close();
@@ -383,4 +479,10 @@ std::vector<std::vector<int>> Network::groups() {
     }
 
     return connectedComponents;
+}
+
+// pre: ownerId is a valid user ID (in the range of users_)
+// post: returns a string containing the most recent [howMany] posts (or all if howMany >= the number of posts from user) of the specified user
+std::string Network::getPostsString(int ownerId, int howMany, bool showOnlyPublic) {
+    return users_[ownerId]->getPostsString(howMany, showOnlyPublic);
 }
