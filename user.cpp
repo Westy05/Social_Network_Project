@@ -50,8 +50,10 @@ std::string User::getPostsString(int howMany, bool showOnlyPublic) {
     std::string postsString;
     
     // effectively the range is from n-1 to n-howMany (or 0 if howMany exceeds size) where n is the size of messages_
+    int limit = (howMany >= messages_.size() ? 0 : messages_.size()-howMany);
+
     // for loop iterates through messages_ in reverse to easily grab most recent posts
-    for (int index = messages_.size()-1; (index >= messages_.size()-howMany) && (index >= 0); index--) {
+    for (int index = messages_.size()-1; index >= limit; index--) {
         Post* currentPost = messages_[index];
         
         if (showOnlyPublic) { // checks if it should bother checking whether posts are public or not
