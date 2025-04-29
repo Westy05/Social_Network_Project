@@ -6,10 +6,17 @@
 std::string findFullName(std::stringstream &stream);
 void printUserOptions();
 
+void test(Network& net) {
+    std::cout << net.numUsers() << std::endl;
+    std::cout << net.getPostsString(0, 50, false);
+}
+
 int main(int argc, char const *argv[]) {    
     Network net;
     net.readUsers(const_cast<char*>(argv[1])); // casts argument (assumed to be exact file name) as a non-const so code works
+    net.readPosts(const_cast<char*>(argv[2]));
 
+    // test(net);
     printUserOptions();
 
     // first input of program's runtime and stores entire input in userInput
@@ -24,9 +31,9 @@ int main(int argc, char const *argv[]) {
     inputTokenizer >> option;
     bool firstTime = true;
     
-    // while loop ends if user inputs any number outside the range of 1-4 at the start
+    // while loop ends if user inputs any number outside the range of 1-5 at the start
     // the loop will also end if the command doesn't start with a number because option will default to 0 making it out of range
-    while (option < 5 && option > 0) {
+    while (option < 6 && option > 0) {
         if (!firstTime) {
             printUserOptions();
 
@@ -82,6 +89,18 @@ int main(int argc, char const *argv[]) {
             } else {
                 std::cout << "Number of users written: " << net.numUsers() << std::endl;
             }
+        } else if (option == 5) { // ---view a specific user's most recent posts---
+            int userId, howManyPosts;
+            userId = net.getId(findFullName(inputTokenizer)); // gets the full name of user and gets their id
+            inputTokenizer >> howManyPosts;
+
+            if (userId == -1) {
+                std::cerr << "Error: Invalid user name." << std::endl;
+            } else if (howManyPosts < 1) {
+                std::cerr << "Error: Missing or invalid number of posts." << std::endl;
+            } else {
+                std::cout << net.getPostsString(userId, howManyPosts, false);
+            }
         }
     }
 
@@ -110,5 +129,7 @@ void printUserOptions() {
     std::cout << "Option 1: Add a new user." << std::endl;
     std::cout << "Option 2: Add a friend connection." << std::endl;
     std::cout << "Option 3: Delete a friend connection." << std::endl;
-    std::cout << "Option 4: Write current network to file." << std::endl << std::endl;
+    std::cout << "Option 4: Write current network to file." << std::endl;
+    std::cout << "Option 5: View most recent posts of a specific user." << std::endl;
+    std::cout << std::endl;
 }
