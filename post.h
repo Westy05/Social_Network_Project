@@ -9,7 +9,7 @@ private:
     std::string message_; // contents of post's message
     int likes_; // number of likes on post
 public:
-    Post() : messageId_(-1), ownerId_(-1), message_(std::string()), likes_(0) {}
+    Post() : messageId_(0), ownerId_(0), message_(""), likes_(0) {}
     Post(int messageId, int ownerId, std::string message, int likes) : messageId_(messageId), ownerId_(ownerId), message_(message), likes_(likes) {}
 
     // accessors
