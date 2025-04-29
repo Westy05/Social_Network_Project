@@ -4,10 +4,10 @@
 
 class Post {
 private:
-    int messageId_;
-    int ownerId_;
-    std::string message_;
-    int likes_;
+    int messageId_; // id of post's message
+    int ownerId_; // id of author/owner of post
+    std::string message_; // contents of post's message
+    int likes_; // number of likes on post
 public:
     Post() : messageId_(-1), ownerId_(-1), message_(std::string()), likes_(0) {}
     Post(int messageId, int ownerId, std::string message, int likes) : messageId_(messageId), ownerId_(ownerId), message_(message), likes_(likes) {}
@@ -16,7 +16,7 @@ public:
 
     // pre: post object is constructed
     // post: returns string that contains the message and number of likes
-    std::string toString();
+    virtual std::string toString();
 
     // pre: post object is constructed
     // post: returns post's message ID
@@ -45,8 +45,8 @@ public:
 
 class IncomingPost : public Post {
 private:
-    std::string author_;
-    bool isPublic_;
+    std::string author_; // name of the author of the incoming post
+    bool isPublic_; // true if incoming post is public, false if private
 public:
     IncomingPost() : isPublic_(true), author_(std::string()) {}
     IncomingPost(int messageId, int ownerId, std::string message, int likes, bool isPublic, std::string author) 

@@ -3,6 +3,8 @@
 
 #include <string>
 #include <set>
+#include <vector>
+#include "post.h"
 
 class User {
 private:
@@ -12,9 +14,10 @@ private:
     int year_; // user's birth year
     int zip_; // user's zip code
     std::set<int> friends_; // set of user's friends' IDs
+    std::vector<Post*> messages_;
 public:
-    User() : id_(0), name_(std::string()), year_(0), zip_(0), friends_(std::set<int>()) {}
-    User(int id, std::string name, int year, int zip, std::set<int> friends) : id_(id), name_(name), year_(year), zip_(zip), friends_(friends) {}
+    User() : id_(0), name_(std::string()), year_(0), zip_(0), friends_(std::set<int>()), messages_(std::vector<Post*>()) {}
+    User(int id, std::string name, int year, int zip, std::set<int> friends) : id_(id), name_(name), year_(year), zip_(zip), friends_(friends), messages_(std::vector<Post*>()) {}
 
     // ---modifiers---
 
@@ -25,6 +28,10 @@ public:
     // pre: id is an id in friends_
     // post: deletes the id from friends_ if it exists, otherwise nothing happens
     void deleteFriend(int id);
+
+    // pre: userPost actually points to a Post or IncomingPost object
+    // post: adds the new Post to the messages_ vector
+    void addPost(Post* userPost);
 
     // ---accessors---
 
@@ -47,6 +54,14 @@ public:
     // pre: friends_ is constructed
     // post: returns a set of IDs of the user's friends
     std::set<int>& getFriends();
+
+    // pre: messages_ is constructed
+    // post: returns a vector of Post pointers which are all posts on the User's "page"
+    std::vector<Post*> getPosts();
+
+    // pre: both paramaters are valid and messages_ is constructed
+    // post: returns a (potentially large) string of all the most recent posts of the User or all posts if howMany meets or exceeds size of messages_
+    std::string getPostsString(int howMany, bool showOnlyPublic);
 };
 
 #endif

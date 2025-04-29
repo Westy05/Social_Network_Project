@@ -48,7 +48,7 @@ bool Post::getIsPublic() { return true; }
 // post: returns string containing author's name, indicates whether the post is public, and everything from Post::toString()
 std::string IncomingPost::toString() {
     std::string result = author_ + " wrote";
-    if (!isPublic_) result += " (private)";
+    if (!isPublic_) result += " (private)"; // includes private keyword if post is not public
     result += ": " + Post::toString();
 
     return result;
