@@ -16,10 +16,6 @@ private:
     // pre: source is an actual user id in users_ and group and visited exist beyond the scope of the function with visited being the size of users_
     // post: returns nothing. only modifies 2nd and 3rd paramaters where the group paramater should be somewhat populated if it finds anything.
     void groupsHelper(int source, std::vector<int>& group, std::vector<bool>& visited);
-
-    // pre: both paramaters are valid
-    // post: returns true if p1's messageId is less than p2's, false otherwise
-    bool postComp(Post* p1, Post* p2);
 public:
     Network() : users_(std::vector<User*>()) {}
 

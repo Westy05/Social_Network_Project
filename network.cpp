@@ -6,6 +6,12 @@
 #include <stack>
 #include <algorithm>
 
+// pre: both paramaters are valid
+// post: returns true if p1's messageId is less than p2's, false otherwise
+bool postComp(Post* p1, Post* p2) {
+    return p1->getMessageId() < p2->getMessageId();
+}
+
 // ---private helpers---
 
 // pre: name is a valid string
@@ -24,12 +30,6 @@ std::string Network::trimName(const std::string &name) {
         first = false;
     }
     return result;
-}
-
-// pre: both paramaters are valid
-// post: returns true if p1's messageId is less than p2's, false otherwise
-bool Network::postComp(Post* p1, Post* p2) {
-    return p1->getMessageId() < p2->getMessageId();
 }
 
 // ---modifiers---
