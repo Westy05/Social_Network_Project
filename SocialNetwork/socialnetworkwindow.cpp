@@ -22,7 +22,7 @@ SocialNetworkWindow::SocialNetworkWindow(QWidget *parent)
     connect(ui->addFriendButton, &QPushButton::clicked, this, &SocialNetworkWindow::addFriendToUser);
     connect(ui->postButton, &QPushButton::clicked, this, &SocialNetworkWindow::createAPost);
 
-    updateDisplay();
+    updateDisplay(); // critically important in hiding widgets here
 }
 
 SocialNetworkWindow::~SocialNetworkWindow()
@@ -30,6 +30,9 @@ SocialNetworkWindow::~SocialNetworkWindow()
     delete ui;
 }
 
+
+// pre: none
+// post: updates the UI to show/hide certain widgets
 void SocialNetworkWindow::updateDisplay() {
     if (currentUser != nullptr) { // hides login widgets
         ui->namePrompt->setVisible(false);
@@ -76,6 +79,9 @@ void SocialNetworkWindow::updateDisplay() {
     }
 }
 
+
+// pre: none
+// post: logs user into the network
 void SocialNetworkWindow::logIn() {
     std::string name = ui->nameInput->toPlainText().toStdString();
 
@@ -91,6 +97,8 @@ void SocialNetworkWindow::logIn() {
     }
 }
 
+// pre: both currentUser and displayedUser are not null
+// post: loads the correct profile
 void SocialNetworkWindow::loadProfile() {
     // decides whether it is the user's profile page
     bool isMyProfile = (displayedUser->getName() == currentUser->getName());
@@ -138,6 +146,8 @@ void SocialNetworkWindow::loadProfile() {
     updateDisplay();
 }
 
+// pre: cell at (column, row) in table of profile's friends contains the name of a valid user
+// post: changes profile to said user
 void SocialNetworkWindow::goToProfile(int row, int column) {
     // grabs the id of the user with the name in cell at row, column (x, y)
     int userId = socialNet.getId(ui->listOfFriends->item(row, column)->text().toStdString());
@@ -146,11 +156,15 @@ void SocialNetworkWindow::goToProfile(int row, int column) {
     loadProfile();
 }
 
+// pre: currentUser is not null
+// post: loads the profile of the user logged in
 void SocialNetworkWindow::goHome() {
     displayedUser = currentUser;
     loadProfile();
 }
 
+// pre: cell at (column, row) in table of suggested friends contains the name of a valid user
+// post: changes profile to said user
 void SocialNetworkWindow::goToSuggested(int row, int column) {
     int userId = socialNet.getId(ui->suggestedFriends->item(row, column)->text().toStdString());
 
@@ -158,12 +172,16 @@ void SocialNetworkWindow::goToSuggested(int row, int column) {
     loadProfile();
 }
 
+// pre: both currentUser and displayedUser are not null AND users.txt exists at specified path below
+// post: creates a new connection between the profile being displayed and the logged in user. also updates users.txt to include the new connection
 void SocialNetworkWindow::addFriendToUser() {
     socialNet.addConnection(currentUser->getName(), displayedUser->getName());
     socialNet.writeUsers(const_cast<char*>("C:/cygwin64/home/heron/CS62Project/SocialNetwork/users.txt"));
-    updateDisplay();
+    loadProfile();
 }
 
+// pre: both currentUser and displayedUser are not null AND posts.txt exists at the specified path below
+// post: creates a new post if done on own profile or incoming post if on someone else's profile. also updates posts.txt to include the new post
 void SocialNetworkWindow::createAPost() {
     std::string message = ui->postEditor->toPlainText().toStdString();
     if (displayedUser->getName() == currentUser->getName()) {
