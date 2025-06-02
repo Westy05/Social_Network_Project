@@ -29,16 +29,11 @@ std::string Post::getMessage() { return message_; }
 // post: returns post's number of likes
 int Post::getLikes() { return likes_; }
 
+int Post::getPostPrivacy() { return postPrivacy_; }
 
 // pre: post object is constructed
 // post: returns empty string
 std::string Post::getAuthor() { return ""; }
-
-
-// pre: post object is constructed
-// post: returns true
-bool Post::getIsPublic() { return true; }
-
 
 // ----IncomingPost----
 
@@ -48,7 +43,8 @@ bool Post::getIsPublic() { return true; }
 // post: returns string containing author's name, indicates whether the post is public, and everything from Post::toString()
 std::string IncomingPost::toString() {
     std::string result = author_ + " wrote";
-    if (!isPublic_) result += " (private)"; // includes private keyword if post is not public
+    if (getPostPrivacy() == 0) result += " (private)"; // includes private keyword if post is not public
+    else if (getPostPrivacy() == 2) result += " (semi-private)"; // includes semi-private keyword if post is semi-private
     result += ": " + Post::toString();
 
     return result;
@@ -57,7 +53,3 @@ std::string IncomingPost::toString() {
 // pre: post object is constructed
 // post: returns author of incoming post's name
 std::string IncomingPost::getAuthor() { return author_; }
-
-// pre: post object is constructed
-// post: returns a boolean that indicates whether the incoming post is public or private
-bool IncomingPost::getIsPublic() { return isPublic_; }

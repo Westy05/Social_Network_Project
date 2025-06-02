@@ -8,9 +8,10 @@ private:
     int ownerId_; // id of author/owner of post
     std::string message_; // contents of post's message
     int likes_; // number of likes on post
+    int postPrivacy_; // privacy level of post (0 = private, 1 = public, and 2 = semi-private)
 public:
-    Post() : messageId_(0), ownerId_(0), message_(""), likes_(0) {}
-    Post(int messageId, int ownerId, std::string message, int likes) : messageId_(messageId), ownerId_(ownerId), message_(message), likes_(likes) {}
+    Post() : messageId_(0), ownerId_(0), message_(""), likes_(0), postPrivacy_(1) {}
+    Post(int messageId, int ownerId, std::string message, int likes, int privacy = 1) : messageId_(messageId), ownerId_(ownerId), message_(message), likes_(likes), postPrivacy_(privacy) {}
 
     // accessors
 
@@ -35,22 +36,21 @@ public:
     int getLikes();
 
     // pre: post object is constructed
-    // post: returns empty string
-    virtual std::string getAuthor();
+    // post: returns post's privacy level (0 = private, 1 = public, and 2 = semi-private)
+    int getPostPrivacy();
 
     // pre: post object is constructed
-    // post: returns true
-    virtual bool getIsPublic();
+    // post: returns empty string
+    virtual std::string getAuthor();
 };
 
 class IncomingPost : public Post {
 private:
     std::string author_; // name of the author of the incoming post
-    bool isPublic_; // true if incoming post is public, false if private
 public:
-    IncomingPost() : isPublic_(true), author_(std::string()) {}
-    IncomingPost(int messageId, int ownerId, std::string message, int likes, bool isPublic, std::string author) 
-    : Post(messageId, ownerId, message, likes), isPublic_(isPublic), author_(author) {}
+    IncomingPost() : author_(std::string()) {}
+    IncomingPost(int messageId, int ownerId, std::string message, int likes, int privacy, std::string author) 
+    : Post(messageId, ownerId, message, likes, privacy), author_(author) {}
 
     // accessors
 
@@ -61,10 +61,6 @@ public:
     // pre: post object is constructed
     // post: returns author of incoming post's name
     std::string getAuthor();
-
-    // pre: post object is constructed
-    // post: returns a boolean that indicates whether the incoming post is public or private
-    bool getIsPublic();
 };
 
 #endif
