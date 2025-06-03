@@ -44,7 +44,7 @@ public:
 
     // pre: paramaters must be valid and ownerId must be an already existing user ID
     // post: adds a new post entry in the user's messages_ vector
-    void addPost(int ownerId, std::string message, int likes, bool isIncoming, std::string authorName, bool isPublic);
+    void addPost(int ownerId, std::string message, int likes, bool isIncoming, std::string authorName, int privacyLevel);
 
     // pre: fname (the file name of the txt file) must be present in the same directory as the program and have correct format
     // post: returns 0 if the file was successfully read into the network object, returns -1 if it fails at any point

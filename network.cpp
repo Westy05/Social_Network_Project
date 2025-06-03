@@ -122,8 +122,26 @@ int Network::readUsers(char* fname) {
         if (!std::getline(myFile, myLine)) return -1; // read user's ID
         int id = std::stoi(myLine);
 
-        if (!std::getline(myFile, myLine)) return -1; // read user's name
-        std::string fullName = trimName(myLine); // trims whitespaces off name
+        if (!std::getline(myFile, myLine)) return -1; // read user's name (or privacy level depending on version)
+        std::string secondElement = trimName(myLine); // trims whitespaces off string
+        
+        std::string fullName;
+        int privacyLvl = 1; // public by default
+
+        // checks whether string is actually an integer for privacy level
+        if (std::all_of(secondElement.begin(), secondElement.end(), std::isdigit)) {
+            int tempPrivacy = std::stoi(secondElement); // privacy is set
+
+            // validates that the value is in range
+            if (tempPrivacy >= 0 && tempPrivacy <= 2) {
+                privacyLvl = tempPrivacy;
+            }
+
+            if (!std::getline(myFile, myLine)) return -1; // reads user's name now, shifts all following readings by a line
+            fullName = trimName(myLine);
+        } else { // otherwise it is treated like the old format
+            fullName = secondElement;
+        }
 
         if (!std::getline(myFile, myLine)) return -1; // read user's birth year
         int birthYear = std::stoi(myLine);
@@ -139,7 +157,7 @@ int Network::readUsers(char* fname) {
             friends.insert(friendId);
         }
 
-        User* newUser = new User(id, fullName, birthYear, zipCode, friends); // done for readability
+        User* newUser = new User(id, fullName, birthYear, zipCode, friends, privacyLvl); // done for readability
 
         addUser(newUser);
     }
@@ -161,6 +179,7 @@ int Network::writeUsers(char* fname) {
     // iterates over each user and writes their fields into the file with proper formatting
     for (User* user : users_) {
         saveFile << user->getId() << std::endl;
+        saveFile << "\t" << user->getFriendListPrivacy() << std::endl;
         saveFile << "\t" << user->getName() << std::endl;
         saveFile << "\t" << user->getYear() << std::endl;
         saveFile << "\t" << user->getZip() << std::endl;
@@ -178,12 +197,12 @@ int Network::writeUsers(char* fname) {
 
 // pre: paramaters must be valid and ownerId must be an already existing user ID
 // post: adds a new post entry in the user's messages_ vector
-void Network::addPost(int ownerId, std::string message, int likes, bool isIncoming, std::string authorName, bool isPublic) {
+void Network::addPost(int ownerId, std::string message, int likes, bool isIncoming, std::string authorName, int privacyLevel) {    
     int messageId = numOfPosts_;
     if (isIncoming) { // determines whether to add new post as IncomingPost or Post
-        users_[ownerId]->addPost(new IncomingPost(messageId, ownerId, message, likes, isPublic, authorName));
+        users_[ownerId]->addPost(new IncomingPost(messageId, ownerId, message, likes, privacyLevel, authorName));
     } else {
-        users_[ownerId]->addPost(new Post(messageId, ownerId, message, likes));
+        users_[ownerId]->addPost(new Post(messageId, ownerId, message, likes, privacyLevel));
     }
     numOfPosts_++;
 }
@@ -215,14 +234,23 @@ int Network::readPosts(char* fname) {
         int likes = std::stoi(myLine);
 
         if (!std::getline(myFile, myLine)) return -1; // read incoming post's privacy
-        std::string publicPrivate = trimName(myLine);
+        std::string postPrivacyLvl = trimName(myLine);
 
         if (!std::getline(myFile, myLine)) return -1; // read incoming post's author
         std::string authorName = trimName(myLine);
 
-        bool isPublic = (publicPrivate == "public");
+        // initializes privacyLvl as 1 by default and changes to a valid value depending the string
+        int privacyLvl = 1;
+        if (postPrivacyLvl == "private") {
+            privacyLvl = 0;
+        } else if (postPrivacyLvl == "public") {
+            privacyLvl = 1;
+        } else if (postPrivacyLvl == "semi-private") {
+            privacyLvl = 2;
+        }
 
-        addPost(ownerId, messageContent, likes, !authorName.empty(), authorName, isPublic);
+
+        addPost(ownerId, messageContent, likes, !authorName.empty(), authorName, privacyLvl);
     }
 
     myFile.close();
@@ -256,8 +284,18 @@ int Network::writePosts(char* fname) {
         saveFile << "\t" << post->getOwnerId() << std::endl;
         saveFile << "\t" << post->getLikes() << std::endl;
 
+        // checks if the author field is empty or not
         if (!post->getAuthor().empty()) {
-            saveFile << "\t" << (post->getIsPublic() ? "public" : "private") << std::endl;
+            
+            // if statements that figure out which privacy to save in file
+            if (post->getPostPrivacy() == 0) {
+                saveFile << "\t" << "private" << std::endl;
+            } else if (post->getPostPrivacy() == 1) {
+                saveFile << "\t" << "public" << std::endl;
+            } else if (post->getPostPrivacy() == 2) {
+                saveFile << "\t" << "semi-private" << std::endl;
+            }
+            
             saveFile << "\t" << post->getAuthor() << std::endl;
         } else {
             saveFile << "\t" << std::endl;
