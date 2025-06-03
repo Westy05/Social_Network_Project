@@ -18,7 +18,7 @@ private:
     // post: returns nothing. only modifies 2nd and 3rd paramaters where the group paramater should be somewhat populated if it finds anything.
     void groupsHelper(int source, std::vector<int>& group, std::vector<bool>& visited);
 public:
-    Network() : users_(std::vector<User*>()) {}
+    Network() : users_(std::vector<User*>()), numOfPosts_(0) {}
 
     // ---modifiers---
     
@@ -94,6 +94,9 @@ public:
     // post: returns a sorted vector of ALL friends of friends
     std::vector<int> getFriendsOfFriends(int who);
 
+    // pre: both parameters are valid user IDs within the network
+    // post: returns an integer that corresponds with the access level that the accessingUser should have with the targetUser.
+    // 0 = private access (can see all), 1 = public access (can only see public things), 2 = semi-private access (can only see semi-private & public things)
     int getAccessLevel(int user1, int user2);
 };
 
