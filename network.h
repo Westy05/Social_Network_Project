@@ -90,6 +90,8 @@ public:
     // post: returns a string containing the most recent [howMany] posts (or all if howMany >= the number of posts from user) of the specified user
     std::string getPostsString(int ownerId, int howMany, int privacyLevel);
 
+    // pre: who is a valid user ID
+    // post: returns a sorted vector of ALL friends of friends
     std::vector<int> getFriendsOfFriends(int who);
 };
 

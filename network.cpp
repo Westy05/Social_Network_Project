@@ -527,6 +527,8 @@ std::string Network::getPostsString(int ownerId, int howMany, int privacyLevel) 
     return users_[ownerId]->getPostsString(howMany, privacyLevel);
 }
 
+// pre: who is a valid user ID
+// post: returns a sorted vector of ALL friends of friends
 std::vector<int> Network::getFriendsOfFriends(int who) {
     if (who >= numUsers()) return std::vector<int>();
 
