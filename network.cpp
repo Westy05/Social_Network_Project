@@ -556,6 +556,7 @@ std::vector<int> Network::getFriendsOfFriends(int who) {
 // 0 = private access (can see all), 1 = public access (can only see public things), 2 = semi-private access (can only see semi-private things)
 int Network::getAccessLevel(int accessingUser, int targetUser) {
     if (accessingUser >= numUsers() || targetUser >= numUsers()) return -1;
+    if (accessingUser == targetUser) return 0; // same user, private access
 
     std::vector<int> friendsOfFriends = getFriendsOfFriends(targetUser);
     std::set<int> friendsOfUser = users_[targetUser]->getFriends();
