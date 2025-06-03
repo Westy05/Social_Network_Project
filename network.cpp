@@ -5,6 +5,7 @@
 #include <utility>
 #include <stack>
 #include <algorithm>
+#include <cctype>
 
 // pre: both paramaters are valid
 // post: returns true if p1's messageId is less than p2's, false otherwise
@@ -129,13 +130,8 @@ int Network::readUsers(char* fname) {
         int privacyLvl = 1; // public by default
 
         // checks whether string is actually an integer for privacy level
-        if (std::all_of(secondElement.begin(), secondElement.end(), std::isdigit)) {
-            int tempPrivacy = std::stoi(secondElement); // privacy is set
-
-            // validates that the value is in range
-            if (tempPrivacy >= 0 && tempPrivacy <= 2) {
-                privacyLvl = tempPrivacy;
-            }
+        if (secondElement == "0" || secondElement == "1" || secondElement == "2") {
+            privacyLvl = std::stoi(secondElement); // privacy is set
 
             if (!std::getline(myFile, myLine)) return -1; // reads user's name now, shifts all following readings by a line
             fullName = trimName(myLine);
