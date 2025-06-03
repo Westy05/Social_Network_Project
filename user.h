@@ -66,7 +66,7 @@ public:
 
     // pre: both paramaters are valid and messages_ is constructed
     // post: returns a (potentially large) string of all the most recent posts of the User or all posts if howMany meets or exceeds size of messages_
-    std::string getPostsString(int howMany, int privacyLevel);
+    std::string getPostsString(int howMany, int privacyAccessLevel);
 
     // pre: friendListPrivacy_ has a value
     // post: returns the privacy level of the user's friend list

@@ -52,9 +52,9 @@ std::set<int>& User::getFriends() { return friends_; }
 // post: returns a vector of Post pointers which are all posts on the User's "page"
 std::vector<Post*> User::getPosts() { return messages_; }
 
-// pre: both paramaters are valid and messages_ is constructed
+// pre: both paramaters are valid and messages_ is constructed. privacyAccessLevel essentially is 0 (private access), 1 (public access), or 2 (semi-private access)
 // post: returns a (potentially large) string of all the most recent posts of the User or all posts if howMany meets or exceeds size of messages_
-std::string User::getPostsString(int howMany, int privacyLevel) {
+std::string User::getPostsString(int howMany, int privacyAccessLevel) {
     std::string postsString;
     
     // effectively the range is from n-1 to n-howMany (or 0 if howMany exceeds size) where n is the size of messages_
@@ -65,12 +65,12 @@ std::string User::getPostsString(int howMany, int privacyLevel) {
     for (int index = messages_.size()-1; index >= limit; index--) {
         Post* currentPost = messages_[index];
         
-        if (privacyLevel == 0) { // checks if it should only show public posts
-            if (currentPost->getIsPublic()) postsString += currentPost->toString() + "\n\n";
-        } else if (privacyLevel == 2) { // checks if it should only show semi-private posts
-
-        } else { // shows all posts
+        if (privacyAccessLevel == 0) { // all posts
             postsString += currentPost->toString() + "\n\n";
+        } else if (privacyAccessLevel == 1) { // public posts only
+            if (currentPost->getPostPrivacy() == 1) postsString += currentPost->toString() + "\n\n";
+        } else if (privacyAccessLevel == 2) { // public and semi-private posts only
+            if (currentPost->getPostPrivacy() == 1 || currentPost->getPostPrivacy() == 2) postsString += currentPost->toString() + "\n\n";
         }
     }
 
