@@ -48,6 +48,8 @@ public:
     // pre: both currentUser and displayedUser are not null AND posts.txt exists at the specified path below
     // post: creates a new post if done on own profile or incoming post if on someone else's profile. also updates posts.txt to include the new post
     void createAPost();
+
+    void changeFriendListPrivacy();
 private:
     Ui::SocialNetworkWindow *ui;
     Network socialNet;

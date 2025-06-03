@@ -223,6 +223,25 @@
       </widget>
      </item>
      <item>
+      <widget class="QComboBox" name="postPrivacySelector">
+       <item>
+        <property name="text">
+         <string>Private (only friends can see)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Public (everyone can see)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Semi-private (friends and friends of friends can see)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="postButton">
        <property name="text">
         <string>Post your message</string>
@@ -245,6 +264,100 @@
        </property>
        <property name="wordWrap">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>480</y>
+      <width>261</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="privacyLayout">
+     <property name="leftMargin">
+      <number>5</number>
+     </property>
+     <property name="topMargin">
+      <number>5</number>
+     </property>
+     <property name="rightMargin">
+      <number>5</number>
+     </property>
+     <property name="bottomMargin">
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="privacyTitle">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>5</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Friend List Privacy Setting</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="friendListPrivacySelector">
+       <item>
+        <property name="text">
+         <string>Private (only friends can see)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Public (everyone can see)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Semi-private (friends and friends of friends can see)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="savePrivacySetting">
+       <property name="text">
+        <string>Save Privacy Setting</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="currentPrivacy">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>5</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Current Setting: [unknown]</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
       </widget>
      </item>
