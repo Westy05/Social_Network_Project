@@ -18,9 +18,9 @@ void User::deleteFriend(int id) { friends_.erase(id); }
 void User::addPost(Post* userPost) { messages_.push_back(userPost); }
 
 // pre: object is constructed
-// post: sets the privacy level of the user's friend list to newPrivacy if it is between 1 and 3, otherwise does nothing
+// post: sets the privacy level of the user's friend list to newPrivacy if it is between 0 and 2, otherwise does nothing
 void User::setFriendListPrivacy(int newPrivacy) {
-    if (newPrivacy >= 1 && newPrivacy <= 3) {
+    if (newPrivacy >= 0 && newPrivacy <= 2) {
         friendListPrivacy_ = newPrivacy;
     }
 }
