@@ -93,6 +93,8 @@ public:
     // pre: who is a valid user ID
     // post: returns a sorted vector of ALL friends of friends
     std::vector<int> getFriendsOfFriends(int who);
+
+    int getAccessLevel(int user1, int user2);
 };
 
 #endif

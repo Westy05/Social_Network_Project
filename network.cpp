@@ -529,11 +529,19 @@ std::vector<int> Network::getFriendsOfFriends(int who) {
     if (who >= numUsers()) return std::vector<int>();
 
     std::set<int> FOFTemp;
+    std::vector<bool> isFriendOfUser(numUsers(), false);
+    
+    // mark all users who are friends as friends of the user who. will be used to prevent shared friends from being added as friends of friends.
+    for (int friendId : users_[who]->getFriends()) {
+        isFriendOfUser[friendId] = true;
+    }
     
     // loop through who's list of friends to find friends of friends
     for (int friendId : users_[who]->getFriends()) {
-        for (int friendOfFriend : users_[friendId]->getFriends()) {
-            FOFTemp.insert(friendOfFriend);
+        for (int friendOfFriendId : users_[friendId]->getFriends()) {
+            if (!isFriendOfUser[friendOfFriendId]) { // prevents direct friends from being included
+                FOFTemp.insert(friendOfFriendId);
+            }
         }
     }
     
@@ -541,4 +549,27 @@ std::vector<int> Network::getFriendsOfFriends(int who) {
     std::vector<int> friendsOfFriends(FOFTemp.begin(), FOFTemp.end());
 
     return friendsOfFriends;
+}
+
+// pre: both parameters are valid user IDs within the network
+// post: returns an integer that corresponds with the access level that the accessingUser should have with the targetUser.
+// 0 = private access (can see all), 1 = public access (can only see public things), 2 = semi-private access (can only see semi-private things)
+int Network::getAccessLevel(int accessingUser, int targetUser) {
+    if (accessingUser >= numUsers() || targetUser >= numUsers()) return -1;
+
+    std::vector<int> friendsOfFriends = getFriendsOfFriends(targetUser);
+    std::set<int> friendsOfUser = users_[targetUser]->getFriends();
+
+    // checks if user has private access (0)
+    for (int ID : friendsOfUser) {
+        if (ID == accessingUser) return 0;
+    }
+
+    // checks if user has semi-private access (2)
+    for (int ID : friendsOfFriends) {
+        if (ID == accessingUser) return 2;
+    }
+
+    // otherwise user has public access (1)
+    return 1;
 }
