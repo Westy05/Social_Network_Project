@@ -523,6 +523,24 @@ std::vector<std::vector<int>> Network::groups() {
 
 // pre: ownerId is a valid user ID (in the range of users_)
 // post: returns a string containing the most recent [howMany] posts (or all if howMany >= the number of posts from user) of the specified user
-std::string Network::getPostsString(int ownerId, int howMany, bool showOnlyPublic) {
-    return users_[ownerId]->getPostsString(howMany, showOnlyPublic);
+std::string Network::getPostsString(int ownerId, int howMany, int privacyLevel) {
+    return users_[ownerId]->getPostsString(howMany, privacyLevel);
+}
+
+std::vector<int> Network::getFriendsOfFriends(int who) {
+    if (who >= numUsers()) return std::vector<int>();
+
+    std::set<int> FOFTemp;
+    
+    // loop through who's list of friends to find friends of friends
+    for (int friendId : users_[who]->getFriends()) {
+        for (int friendOfFriend : users_[friendId]->getFriends()) {
+            FOFTemp.insert(friendOfFriend);
+        }
+    }
+    
+    // converts the set into a vector to return
+    std::vector<int> friendsOfFriends(FOFTemp.begin(), FOFTemp.end());
+
+    return friendsOfFriends;
 }
